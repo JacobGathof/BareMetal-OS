@@ -24,7 +24,17 @@ int main(){
 
   char line[512];
 
+  printString("Hello World\0");
+
+  printString("Enter a line: \0");
+  readString(line);
+  printString(line);
+
+  readSector(line, 30);
+  printString(line);
+
   makeInterrupt21();
+  printString("Enter message using interrupt handler: ");
   interrupt(0x21, 1,line,0,0);
   interrupt(0x21, 0,line,0,0);
 
