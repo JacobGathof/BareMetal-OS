@@ -7,11 +7,15 @@ void makeCommand(char*, char*, char*);
 void processCommand(char*);
 int strEqual(char*, char*);
 int div(int,int);
+void runGraphics(char*);
+void getMap(char *, char*);
+int mod(int, int);
 
 int main(){
   enableInterrupts();
 
-  interrupt(0x21, 13, "graphics", 0, 0);
+  /*interrupt(0x21, 13, "graphics", 0, 0);*/
+  runGraphics("ghosty");
 
   while(1){
     char buffer[512];
@@ -134,10 +138,56 @@ void processCommand(char* cmd){
   else if(strEqual(cmdBuffer, "status")){
     interrupt(0x21, 16,0, 0, 0);
   }
+  else if(strEqual(cmdBuffer, "draw")){
+      runGraphics(arg);
+  }
   else{
     interrupt(0x21, 0, "    Bad Command!\n\r", 0, 0);
   }
 
+}
+
+void runGraphics(char* name) {
+  int i=0;
+  int j = 0;
+  int a=0;
+  int b=0;
+  char image[512];
+  int counter= 0;
+  char buffer[512];
+  getMap(name, image);
+
+
+  interrupt(0x10, 0x000d, 0x0000, 0x0000, 0x0000);
+
+  for (i = 0; i < 512; i++) {
+    char currentChar = image[i];
+    for (j = 1; j <= 128; j*=2){
+      char col = 15;
+      if ((currentChar & j) == 0){
+        col = 0;
+      }
+      for(a = 0; a < 2; a++){
+        for(b =0; b < 2; b++){
+            interrupt(0x10, 0x0C00+col, 0x0000, mod(counter,64) * 2+a+100, div(counter, 64) * 2+b);
+        }
+      }
+      counter++;
+    }
+  }
+  interrupt(0x21, 1, buffer, 0, 0);
+  interrupt(0x10, 0x0003, 0x0000, 0x0000, 0x0000);
+}
+
+void getMap(char * filename, char* buf) {
+  interrupt(0x21, 3, filename, buf, 0);
+}
+
+int mod(int a, int b){
+  while (a >= b){
+    a = a - b;
+  }
+  return a;
 }
 
 int div(int a, int b){

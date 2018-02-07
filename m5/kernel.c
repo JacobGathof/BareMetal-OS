@@ -10,13 +10,14 @@ typedef struct{
   int active;
   int sp;
   int waiting;
-  char name[6];
+  char name[7];
 } process;
 
 process processTable[8];
 int currentProcess;
 int currFore;
 int currBack;
+char imageName[6];
 
 void printString(char *);
 void readString(char *);
@@ -339,12 +340,12 @@ int executeProgram(char* name){
   int freeIndex;
   int freeI;
   int t = 0;
-  char newName[6];
-  while(t < 6){
-    newName[t] = name[t];
-    t++;
-  }
-  newName[t] = '\0';
+  char c1 = name[0];
+  char c2 = name[1];
+  char c3 = name[2];
+  char c4 = name[3];
+  char c5 = name[4];
+  char c6 = name[5];
 
   found = readFile(name, buffer);
 
@@ -364,9 +365,13 @@ int executeProgram(char* name){
   setKernelDataSegment();
   processTable[freeIndex].sp = 0xff00;
   processTable[freeIndex].active = 1;
-  for(t = 0; t < 6; t++){
-    processTable[freeIndex].name[t] = newName[t];
-  }
+  processTable[freeIndex].name[0] = c1;
+  processTable[freeIndex].name[1] = c2;
+  processTable[freeIndex].name[2] = c3;
+  processTable[freeIndex].name[3] = c4;
+  processTable[freeIndex].name[4] = c5;
+  processTable[freeIndex].name[5] = c6;
+  processTable[freeIndex].name[6] = '\0';
 
   restoreDataSegment();
   initializeProgram(freeI);
@@ -533,7 +538,25 @@ void handleInterrupt21(int ax,int bx,int cx,int dx){
     setScreenColor(-1, bx);
   }else if (ax == 16){
     printActiveProcesses();
-  }else{
+  }/*else if (ax == 17){
+    int i;
+    char c;
+    for (i = 0; i < 6; i++){
+      c = ((char *)bx)[i];
+      setKernelDataSegment();
+      imageName[i] = c;
+      restoreDataSegment();
+    }
+  }else if (ax == 18){
+    int i;
+    char c;
+    for (i = 0; i < 6; i++){
+      setKernelDataSegment();
+      c = imageName[i];
+      restoreDataSegment();
+      ((char *)bx)[i] = c;
+    }
+  }*/else{
   }
 }
 
