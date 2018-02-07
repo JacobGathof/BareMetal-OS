@@ -23,3 +23,11 @@ There are several commands available:
 (quit) 				: exit the OS
 
 
+Bonus Features:
+Image drawing - 64 x 64 images can drawn by the OS with the draw command
+Status - displays all of the currently active processes and their names
+Sector Display - when running dir, the number of sectors a file takes up is also displayed
+Background Color - the set-b command can change the background color
+Foreground Color - the set-f command can change the text color
+Quit - the quit command causes the Operating System to terminate
+Help - the help command shows the various commands that can be given to the shell along with what they do
