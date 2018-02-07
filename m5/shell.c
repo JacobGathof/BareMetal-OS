@@ -134,6 +134,9 @@ void processCommand(char* cmd){
     interrupt(0x21, 0,"(reset) : clear the current console screen\n\r", 0, 0);
     interrupt(0x21, 0,"(execforeground | ps) <filename> : execute the given process while blocking the shell\n\r", 0, 0);
     interrupt(0x21, 0,"(quit) : exit the OS\n\r", 0, 0);
+    interrupt(0x21, 0,"(set-b) <number> : set background color\n\r", 0, 0);
+    interrupt(0x21, 0,"(set-f) <number> : set foreground color\n\r", 0, 0);
+    interrupt(0x21, 0,"(draw) <filename> : draw an image\n\r", 0, 0);
   }
   else if(strEqual(cmdBuffer, "status")){
     interrupt(0x21, 16,0, 0, 0);
